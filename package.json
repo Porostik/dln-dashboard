@@ -1,5 +1,5 @@
 {
-  "name": "@dln-analytics/source",
+  "name": "@dln-dashboard/source",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {},
@@ -9,6 +9,9 @@
     "@nestjs/core": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",
     "axios": "^1.6.0",
+    "dotenv": "^17.2.3",
+    "kysely": "^0.28.9",
+    "pg": "^8.16.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0"
   },
@@ -17,6 +20,7 @@
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.0",
     "@nx/docker": "22.3.3",
+    "@nx/esbuild": "22.3.3",
     "@nx/eslint": "22.3.3",
     "@nx/eslint-plugin": "22.3.3",
     "@nx/jest": "22.3.3",
@@ -32,11 +36,14 @@
     "@swc/jest": "~0.2.38",
     "@types/jest": "^30.0.0",
     "@types/node": "20.19.9",
+    "@types/pg": "^8.16.0",
+    "esbuild": "^0.19.2",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
     "jest": "^30.0.2",
     "jest-environment-node": "^30.0.2",
     "jest-util": "^30.0.2",
+    "jsonc-eslint-parser": "^2.1.0",
     "nx": "22.3.3",
     "prettier": "~3.6.2",
     "ts-jest": "^29.4.0",
@@ -47,6 +54,10 @@
     "webpack-cli": "^5.1.4"
   },
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "indexer",
+    "aggregator",
+    "api",
+    "db"
   ]
 }

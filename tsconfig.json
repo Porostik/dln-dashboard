@@ -4,10 +4,19 @@
   "files": [],
   "references": [
     {
-      "path": "./apps/dln-dashboarda-e2e"
+      "path": "./apps/indexer"
     },
     {
-      "path": "./apps/dln-dashboarda"
+      "path": "./apps/aggregator"
+    },
+    {
+      "path": "./apps/api"
+    },
+    {
+      "path": "./libs/db"
+    },
+    {
+      "path": "./apps/db-migrate"
     }
   ]
 }
