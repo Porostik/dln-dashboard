@@ -4,8 +4,15 @@
     "outDir": "dist",
     "types": ["node"],
     "rootDir": "src",
-    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo"
+    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
+    "composite": true
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["eslint.config.js", "eslint.config.cjs", "eslint.config.mjs"]
+  "include": [
+    "src/**/*.ts",
+    "../../libs/db/**/*.ts",
+    "../../libs/data-access/src/kysely.ts",
+    "../../libs/data-access/src/config.ts"
+  ],
+  "exclude": ["eslint.config.js", "eslint.config.cjs", "eslint.config.mjs"],
+  "references": [{ "path": "../../libs/db/tsconfig.lib.json" }]
 }

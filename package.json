@@ -44,6 +44,7 @@
     "jest-environment-node": "^30.0.2",
     "jest-util": "^30.0.2",
     "jsonc-eslint-parser": "^2.1.0",
+    "kysely-codegen": "^0.19.0",
     "nx": "22.3.3",
     "prettier": "~3.6.2",
     "ts-jest": "^29.4.0",
@@ -58,6 +59,8 @@
     "indexer",
     "aggregator",
     "api",
-    "db"
+    "db",
+    "libs",
+    "libs/data-access"
   ]
 }

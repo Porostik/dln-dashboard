@@ -27,7 +27,8 @@
           "buildDepsName": "build-deps",
           "watchDepsName": "watch-deps"
         }
-      }
+      },
+      "exclude": ["libs/data-access/*"]
     },
     {
       "plugin": "@nx/webpack/plugin",
@@ -54,6 +55,15 @@
         },
         "runTarget": {
           "name": "docker:run"
+        }
+      }
+    },
+    {
+      "plugin": "@nx/js/typescript",
+      "include": ["libs/data-access/*"],
+      "options": {
+        "typecheck": {
+          "targetName": "typecheck"
         }
       }
     }

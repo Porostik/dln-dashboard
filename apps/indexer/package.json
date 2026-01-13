@@ -11,7 +11,8 @@
           "args": [
             "--node-env=production"
           ],
-          "cwd": "indexer"
+          "bundle": true,
+          "cwd": "apps/indexer"
         },
         "configurations": {
           "development": {
@@ -28,8 +29,8 @@
         "cache": true,
         "executor": "@nx/js:prune-lockfile",
         "outputs": [
-          "{workspaceRoot}/indexer/dist/package.json",
-          "{workspaceRoot}/indexer/dist/package-lock.json"
+          "{workspaceRoot}/apps/indexer/dist/package.json",
+          "{workspaceRoot}/apps/indexer/dist/package-lock.json"
         ],
         "options": {
           "buildTarget": "build"
@@ -41,7 +42,7 @@
         ],
         "cache": true,
         "outputs": [
-          "{workspaceRoot}/indexer/dist/workspace_modules"
+          "{workspaceRoot}/apps/indexer/dist/workspace_modules"
         ],
         "executor": "@nx/js:copy-workspace-modules",
         "options": {
@@ -63,15 +64,15 @@
           "build"
         ],
         "options": {
-          "buildTarget": "@dln-analytics/indexer:build",
+          "buildTarget": "@dln-dashboard/indexer:build",
           "runBuildTargetDependencies": false
         },
         "configurations": {
           "development": {
-            "buildTarget": "@dln-analytics/indexer:build:development"
+            "buildTarget": "@dln-dashboard/indexer:build:development"
           },
           "production": {
-            "buildTarget": "@dln-analytics/indexer:build:production"
+            "buildTarget": "@dln-dashboard/indexer:build:production"
           }
         }
       }

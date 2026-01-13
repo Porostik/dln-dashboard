@@ -4,9 +4,6 @@
   "files": [],
   "references": [
     {
-      "path": "./apps/indexer"
-    },
-    {
       "path": "./apps/aggregator"
     },
     {
@@ -17,6 +14,12 @@
     },
     {
       "path": "./apps/db-migrate"
+    },
+    {
+      "path": "./apps/indexer"
+    },
+    {
+      "path": "./libs/data-access"
     }
   ]
 }
