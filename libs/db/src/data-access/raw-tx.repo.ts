@@ -26,7 +26,7 @@ export class RawTxRepository {
     return this.db
       .selectFrom('raw_tx')
       .select(['signature', 'tx_data', 'slot', 'block_time'])
-      .where('signature', 'in', signatures)
+      .where('signature', '=', signatures)
       .execute();
   }
 }

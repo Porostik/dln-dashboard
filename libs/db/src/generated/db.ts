@@ -53,9 +53,10 @@ export interface DailyStats {
 }
 
 export interface IndexerState {
-  id: Generated<number>;
-  last_processed_sig: string;
+  backfill_cursor: string | null;
+  forward_cursor: string | null;
   mode: IndexerMode;
+  program_id: string;
 }
 
 export interface OrderEvents {
@@ -67,6 +68,16 @@ export interface OrderEvents {
   slot: Int8;
   token_mint: string;
   type: EventType;
+}
+
+export interface PipelineState {
+  backfill_done: Generated<boolean | null>;
+  created_count: Generated<Int8>;
+  created_target: Generated<Int8>;
+  fulfilled_count: Generated<Int8>;
+  fulfilled_target: Generated<Int8>;
+  id: Generated<number>;
+  updated_at: Generated<Timestamp>;
 }
 
 export interface RawTx {
@@ -83,5 +94,6 @@ export interface DB {
   daily_stats: DailyStats;
   indexer_state: IndexerState;
   order_events: OrderEvents;
+  pipeline_state: PipelineState;
   raw_tx: RawTx;
 }

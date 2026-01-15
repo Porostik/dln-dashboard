@@ -6,8 +6,10 @@
   "private": true,
   "dependencies": {
     "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",
+    "@solana/web3.js": "^1.98.4",
     "axios": "^1.6.0",
     "dotenv": "^17.2.3",
     "kysely": "^0.28.9",
@@ -49,6 +51,7 @@
     "prettier": "~3.6.2",
     "ts-jest": "^29.4.0",
     "ts-node": "10.9.1",
+    "tsconfig-paths-webpack-plugin": "^4.2.0",
     "tslib": "^2.3.0",
     "typescript": "~5.9.2",
     "typescript-eslint": "^8.40.0",

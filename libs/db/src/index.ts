@@ -1,2 +1,3 @@
-export * from './data-access/data-access.module';
 export * from './kysely';
+export * from './data-access';
+export * from './generated/db';

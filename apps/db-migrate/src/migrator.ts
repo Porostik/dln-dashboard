@@ -1,10 +1,10 @@
-import { Migrator } from 'kysely';
-import { db } from '@libs/db';
+import { Kysely, Migrator } from 'kysely';
+import { db } from '@dln-dashboard/data-access';
 import { migrations } from './migrations';
 
 export async function migrateToLatest() {
   const migrator = new Migrator({
-    db,
+    db: db as unknown as Kysely<any>,
     provider: {
       async getMigrations() {
         return migrations;

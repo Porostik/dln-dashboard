@@ -20,7 +20,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "paths": {
-      "@libs/db": ["./libs/db/src/index.ts"]
+      "@dln-dashboard/data-access": ["./libs/db/src/index.ts"]
     }
   }
 }

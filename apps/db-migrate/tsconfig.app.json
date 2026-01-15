@@ -7,12 +7,7 @@
     "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
     "composite": true
   },
-  "include": [
-    "src/**/*.ts",
-    "../../libs/db/**/*.ts",
-    "../../libs/data-access/src/kysely.ts",
-    "../../libs/data-access/src/config.ts"
-  ],
+  "include": ["src/**/*.ts", "../../libs/db/**/*.ts"],
   "exclude": ["eslint.config.js", "eslint.config.cjs", "eslint.config.mjs"],
   "references": [{ "path": "../../libs/db/tsconfig.lib.json" }]
 }

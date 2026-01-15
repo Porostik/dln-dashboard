@@ -1,37 +1,36 @@
 import { Injectable, Inject } from '@nestjs/common';
-import type { Kysely } from 'kysely';
-import { DB, IndexerMode } from '../generated/db';
+import type { Kysely, Selectable } from 'kysely';
+import { DB, IndexerState } from '../generated/db';
 import { DB_TOKEN } from '../db.token';
 
 @Injectable()
 export class IndexerStateRepository {
   constructor(@Inject(DB_TOKEN) private readonly db: Kysely<DB>) {}
 
-  async getState(): Promise<{
-    lastProcessedSig: string;
-    mode: IndexerMode;
-  } | null> {
+  async getOrCreate(programId: string): Promise<Selectable<IndexerState>> {
     const row = await this.db
       .selectFrom('indexer_state')
-      .select(['last_processed_sig', 'mode'])
-      .orderBy('id', 'desc')
-      .limit(1)
+      .selectAll()
+      .where('program_id', '=', programId)
       .executeTakeFirst();
 
-    if (!row) return null;
-    return { lastProcessedSig: row.last_processed_sig, mode: row.mode };
-  }
+    if (row) return row;
 
-  async setState(input: {
-    lastProcessedSig: string;
-    mode: IndexerMode;
-  }): Promise<void> {
     await this.db
       .insertInto('indexer_state')
       .values({
-        last_processed_sig: input.lastProcessedSig,
-        mode: input.mode,
+        program_id: programId,
+        backfill_cursor: null,
+        forward_cursor: null,
+        mode: 'backfill',
       })
+      .onConflict((oc) => oc.column('program_id').doNothing())
       .execute();
+
+    return await this.db
+      .selectFrom('indexer_state')
+      .selectAll()
+      .where('program_id', '=', programId)
+      .executeTakeFirstOrThrow();
   }
 }

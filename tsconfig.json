@@ -17,9 +17,6 @@
     },
     {
       "path": "./apps/indexer"
-    },
-    {
-      "path": "./libs/data-access"
     }
   ]
 }

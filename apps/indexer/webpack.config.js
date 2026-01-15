@@ -1,7 +1,8 @@
 const { NxAppWebpackPlugin } = require('@nx/webpack/app-plugin');
-const { join } = require('path');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const { join, resolve } = require('path');
 
-module.exports = {
+module.exports = () => ({
   output: {
     path: join(__dirname, 'dist'),
     clean: true,
@@ -9,17 +10,24 @@ module.exports = {
       devtoolModuleFilenameTemplate: '[absolute-resource-path]',
     }),
   },
+  resolve: {
+    extensions: ['.ts', '.js'],
+    plugins: [
+      new TsconfigPathsPlugin({
+        configFile: resolve(__dirname, '../../tsconfig.base.json'),
+      }),
+    ],
+  },
   plugins: [
     new NxAppWebpackPlugin({
       target: 'node',
       compiler: 'tsc',
       main: './src/main.ts',
       tsConfig: './tsconfig.app.json',
-      assets: ["./src/assets"],
       optimization: false,
       outputHashing: 'none',
       generatePackageJson: false,
       sourceMap: true,
-    })
+    }),
   ],
-};
+});
