@@ -34,7 +34,7 @@ export class Runner implements OnModuleDestroy {
   }
 
   private async run() {
-    const sources = new Set([this.srcSource, this.dstSource]);
+    const sources = new Set([this.dstSource, this.srcSource]);
 
     while (this.isRunning) {
       let progressed = false;
@@ -47,14 +47,21 @@ export class Runner implements OnModuleDestroy {
 
           if (progress.status === 'processed') {
             this.logger.log(
-              { newCursor: progress.newCursor, mode: this.mode },
+              {
+                newCursor: progress.newCursor,
+                mode: this.mode,
+                programId: progress.programId,
+              },
               'Successful processed indexing page',
             );
             progressed = true;
             await new Promise((res) => setTimeout(res, 500));
           } else if (progress.status === 'exhausted') {
             this.logger.log(
-              { lastProcessedCursor: progress.newCursor },
+              {
+                lastProcessedCursor: progress.newCursor,
+                programId: progress.programId,
+              },
               'Exhausted indexing page',
             );
             if (await source.stop()) sources.delete(source);

@@ -86,6 +86,7 @@ export class SourceService {
   private async tickForward(): Promise<{
     status: 'processed' | 'failed' | 'empty';
     newCursor?: string;
+    programId: string;
   }> {
     try {
       const sigs = await this.fetchSigs({
@@ -93,12 +94,13 @@ export class SourceService {
         limit: this.config.forwardBatchSize,
       });
 
-      if (!sigs.length) return { status: 'empty' };
+      if (!sigs.length)
+        return { status: 'empty', programId: this.config.programId };
 
       const txs = await this.fetchTxs(sigs);
 
       if (!txs.length) {
-        return { status: 'empty' };
+        return { status: 'empty', programId: this.config.programId };
       }
 
       const lastSig = sigs[0]!.signature;
@@ -110,6 +112,7 @@ export class SourceService {
         this.cursor = lastSig;
         return {
           status: 'processed',
+          programId: this.config.programId,
           newCursor: lastSig,
         };
       }
@@ -119,11 +122,13 @@ export class SourceService {
         'Error during indexing tx page',
       );
       return {
+        programId: this.config.programId,
         status: 'failed',
       };
     }
 
     return {
+      programId: this.config.programId,
       status: 'failed',
     };
   }
@@ -131,6 +136,7 @@ export class SourceService {
   private async tickBackfill(): Promise<{
     status: 'processed' | 'exhausted' | 'failed' | 'empty';
     newCursor?: string;
+    programId: string;
   }> {
     try {
       const sigs = await this.fetchSigs({
@@ -138,13 +144,14 @@ export class SourceService {
         limit: this.config.backfillBatchSize,
       });
 
-      if (!sigs.length) return { status: 'exhausted' };
+      if (!sigs.length)
+        return { status: 'exhausted', programId: this.config.programId };
 
       const txs = await this.fetchTxs(sigs);
 
       if (!txs.length && this.emptyPagesInARow < 20) {
         this.emptyPagesInARow += 1;
-        return { status: 'empty' };
+        return { status: 'empty', programId: this.config.programId };
       }
 
       const lastSig = sigs.at(-1)!.signature;
@@ -158,6 +165,7 @@ export class SourceService {
         return {
           status: 'processed',
           newCursor: lastSig,
+          programId: this.config.programId,
         };
       }
     } catch (err) {
@@ -167,11 +175,13 @@ export class SourceService {
       );
       return {
         status: 'failed',
+        programId: this.config.programId,
       };
     }
 
     return {
       status: 'failed',
+      programId: this.config.programId,
     };
   }
 
