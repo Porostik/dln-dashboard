@@ -75,6 +75,22 @@ services:
     command: ['node', 'dist/main.js']
     restart: unless-stopped
 
+  api:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        APP_NAME: api
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ['node', 'dist/main.js']
+    restart: unless-stopped
+    ports:
+      - '${API_PORT:-3000}:3000'
+
 volumes:
   pg-data:
   redis-data:

@@ -40,4 +40,21 @@ export class DayStatsRepository {
       )
       .execute();
   }
+
+  public async getDayVolumes(from?: Date, to?: Date) {
+    let q = this.db
+      .selectFrom('daily_stats')
+      .select([
+        'day',
+        'created_count',
+        'created_volume_usd',
+        'fulfilled_count',
+        'fulfilled_volume_usd',
+      ]);
+
+    if (from) q = q.where('day', '>=', from);
+    if (to) q = q.where('day', '<', to);
+
+    return q.execute();
+  }
 }

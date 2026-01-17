@@ -1,5 +1,5 @@
 {
-  "name": "@dln-dashboard/api",
+  "name": "@dln-dashboard/dashboard-api",
   "version": "0.0.1",
   "private": true,
   "nx": {
@@ -11,7 +11,7 @@
           "args": [
             "--node-env=production"
           ],
-          "cwd": "api"
+          "cwd": "apps/dashboard-api"
         },
         "configurations": {
           "development": {
@@ -28,8 +28,8 @@
         "cache": true,
         "executor": "@nx/js:prune-lockfile",
         "outputs": [
-          "{workspaceRoot}/api/dist/package.json",
-          "{workspaceRoot}/api/dist/package-lock.json"
+          "{workspaceRoot}/apps/dashboard-api/dist/package.json",
+          "{workspaceRoot}/apps/dashboard-api/dist/package-lock.json"
         ],
         "options": {
           "buildTarget": "build"
@@ -41,7 +41,7 @@
         ],
         "cache": true,
         "outputs": [
-          "{workspaceRoot}/api/dist/workspace_modules"
+          "{workspaceRoot}/apps/dashboard-api/dist/workspace_modules"
         ],
         "executor": "@nx/js:copy-workspace-modules",
         "options": {
@@ -63,15 +63,15 @@
           "build"
         ],
         "options": {
-          "buildTarget": "@dln-dashboard/api:build",
+          "buildTarget": "@dln-dashboard/dashboard-api:build",
           "runBuildTargetDependencies": false
         },
         "configurations": {
           "development": {
-            "buildTarget": "@dln-dashboard/api:build:development"
+            "buildTarget": "@dln-dashboard/dashboard-api:build:development"
           },
           "production": {
-            "buildTarget": "@dln-dashboard/api:build:production"
+            "buildTarget": "@dln-dashboard/dashboard-api:build:production"
           }
         }
       }
