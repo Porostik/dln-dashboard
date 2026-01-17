@@ -115,7 +115,7 @@ export class WorkerService {
 
       await Promise.all([
         this.jobsRepo.markDone(done.map((e) => e.sig)),
-        this.jobsRepo.makeSkipped(done.map((e) => e.sig)),
+        this.jobsRepo.makeSkipped(skipped.map((e) => e.sig)),
         ...failed.map((r) =>
           this.jobsRepo.markFailed({
             signature: r.sig,

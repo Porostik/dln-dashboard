@@ -7,6 +7,7 @@ import * as m004 from './004_indexer_cursors';
 import * as m005 from './005_add_order_event_unique_constrains';
 import * as m006 from './006_add_skipped_aggregation_jobs_type';
 import * as m007 from './007_update_indexer_state';
+import * as m008 from './008_fix_order_event_pk';
 
 export const migrations: Record<string, Migration> = {
   '001_init': { up: m001.up, down: m001.down },
@@ -16,4 +17,5 @@ export const migrations: Record<string, Migration> = {
   '005_add_order_event_unique_constrains': { up: m005.up, down: m005.down },
   '006_add_skipped_aggregation_jobs_type': { up: m006.up, down: m006.down },
   '007_update_indexer_state': { up: m007.up, down: m007.down },
+  '008_fix_order_event_pk': { up: m008.up, down: m008.down },
 };

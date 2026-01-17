@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JupiterService } from '../jupiter/jupiter.service';
 import { RedisService } from '../redis/redis.service';
+import { AxiosError } from 'axios';
 
 @Injectable()
 export class PriceService {
@@ -34,6 +35,11 @@ export class PriceService {
 
       return price;
     } catch (err) {
+      if (err instanceof AxiosError) {
+        throw Error(
+          `Error during fetching price code": ${err.code} cause: ${err.message}`,
+        );
+      }
       throw err;
     }
   }

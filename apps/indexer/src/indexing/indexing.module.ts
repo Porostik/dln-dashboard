@@ -40,6 +40,7 @@ import { RpcModule } from '../rpc/rpc.module';
           },
           stateRepo,
           indexerIngestionRepo,
+          config,
         ),
     },
     {
@@ -66,6 +67,7 @@ import { RpcModule } from '../rpc/rpc.module';
           },
           stateRepo,
           indexerIngestionRepo,
+          config,
         ),
     },
   ],

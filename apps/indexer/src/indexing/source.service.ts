@@ -10,6 +10,8 @@ import {
   IndexerStateRepository,
 } from '@dln-dashboard/data-access';
 import { JsonValue, IndexerMode } from '@dln-dashboard/data-access';
+import pLimit from 'p-limit';
+import { AppConfigService } from '../config/config.service';
 
 type SourceConfig = {
   backfillBatchSize: number;
@@ -31,6 +33,7 @@ export class SourceService {
     private config: SourceConfig,
     private stateRepository: IndexerStateRepository,
     private ingestionRepository: IndexerIngestionRepository,
+    private indexerConfig: AppConfigService,
   ) {
     this.program = new PublicKey(config.programId);
   }
@@ -192,16 +195,19 @@ export class SourceService {
       slot: number;
     }[] = [];
 
-    let idx = 0;
+    const limiter = pLimit(this.indexerConfig.rpc_tx_concurrency);
 
-    for (const sig of sigs) {
-      const tx = await this.rpc.getTransaction(sig.signature, {
-        commitment: 'finalized',
-        maxSupportedTransactionVersion: 0,
-      });
-      if (tx) txs.push(this.processRpcTx(sigs, tx, idx));
-      idx += 1;
-    }
+    await Promise.all(
+      sigs.map((sig, idx) =>
+        limiter(async () => {
+          const tx = await this.rpc.getTransaction(sig.signature, {
+            commitment: 'finalized',
+            maxSupportedTransactionVersion: 0,
+          });
+          if (tx) txs.push(this.processRpcTx(sigs, tx, idx));
+        }),
+      ),
+    );
 
     return txs;
   }

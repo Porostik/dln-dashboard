@@ -63,13 +63,9 @@ export class ProcessorService {
                 day.toISOString(),
               );
 
-              if (!price) throw new Error('Price not found');
-
-              const amount = this.calcUsd(
-                e.amount,
-                String(price.price),
-                price.decimals,
-              );
+              const amount = price
+                ? this.calcUsd(e.amount, String(price.price), price.decimals)
+                : 0;
 
               return {
                 signature: sig,
