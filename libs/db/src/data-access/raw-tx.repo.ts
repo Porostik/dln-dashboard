@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import type { Insertable, Kysely } from 'kysely';
+import type { Insertable, Kysely, Selectable } from 'kysely';
 import { DB_TOKEN } from '../db.token';
 import { RawTx, DB } from '../generated/db';
 
@@ -21,12 +21,18 @@ export class RawTxRepository {
     return Number(res.numInsertedOrUpdatedRows ?? 0n);
   }
 
-  async getBySignatures(signatures: string[]) {
-    if (signatures.length === 0) return [];
+  async getBySignatures(signatures: string): Promise<Selectable<RawTx>> {
     return this.db
       .selectFrom('raw_tx')
-      .select(['signature', 'tx_data', 'slot', 'block_time'])
+      .select([
+        'signature',
+        'tx_data',
+        'slot',
+        'block_time',
+        'created_at',
+        'updated_at',
+      ])
       .where('signature', '=', signatures)
-      .execute();
+      .executeTakeFirstOrThrow();
   }
 }

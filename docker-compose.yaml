@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:latest
+    image: postgres:17
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -8,13 +8,28 @@ services:
     ports:
       - '${POSTGRES_PORT}:5432'
     volumes:
-      - pg-data:/var/lib/postgresql
+      - pg-data:/var/lib/postgresql/data
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
       interval: 5s
       timeout: 5s
       retries: 10
       start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+    command: ['redis-server', '--appendonly', 'yes']
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
 
   db-migrate:
     build:
@@ -44,5 +59,22 @@ services:
     command: ['node', 'dist/main.js']
     restart: unless-stopped
 
+  aggregator:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        APP_NAME: aggregator
+    env_file:
+      - .env
+    depends_on:
+      db-migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    command: ['node', 'dist/main.js']
+    restart: unless-stopped
+
 volumes:
   pg-data:
+  redis-data:

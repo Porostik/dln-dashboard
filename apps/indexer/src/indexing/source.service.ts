@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import {
   ConfirmedSignatureInfo,
-  ParsedTransactionWithMeta,
   PublicKey,
   TransactionResponse,
 } from '@solana/web3.js';
@@ -10,7 +9,7 @@ import {
   IndexerIngestionRepository,
   IndexerStateRepository,
 } from '@dln-dashboard/data-access';
-import { JsonValue } from '@dln-dashboard/data-access';
+import { JsonValue, IndexerMode } from '@dln-dashboard/data-access';
 
 type SourceConfig = {
   backfillBatchSize: number;
@@ -21,9 +20,10 @@ type SourceConfig = {
 @Injectable()
 export class SourceService {
   private program: PublicKey;
-  private cursorBackfill: string | null = null;
-  private cursorForward: string | null = null;
+  private cursor: string | null = null;
+  private mode: IndexerMode | null = null;
   private logger = new Logger(SourceService.name);
+  private isStopped = false;
   private emptyPagesInARow = 0;
 
   constructor(
@@ -35,10 +35,11 @@ export class SourceService {
     this.program = new PublicKey(config.programId);
   }
 
-  public async init() {
+  public async init(mode: IndexerMode) {
     try {
       const state = await this.stateRepository.getOrCreate(
         this.config.programId,
+        mode,
       );
       if (!state) {
         this.logger.error(
@@ -46,8 +47,9 @@ export class SourceService {
           'Error fetching indexing state',
         );
       } else {
-        this.cursorBackfill = state?.backfill_cursor;
-        this.cursorForward = state?.forward_cursor;
+        this.cursor = state?.cursor;
+        this.mode = state?.mode;
+        this.isStopped = !!state?.is_stopped;
       }
     } catch (err) {
       this.logger.error(
@@ -57,13 +59,34 @@ export class SourceService {
     }
   }
 
-  public async tickForward(): Promise<{
+  public async stop() {
+    if (this.mode) {
+      await this.stateRepository.stop(this.config.programId, this.mode);
+      this.isStopped = false;
+      return true;
+    }
+    return false;
+  }
+
+  public async tick() {
+    if (this.isStopped) return null;
+
+    if (this.mode === 'default') {
+      return this.tickForward();
+    } else if (this.mode === 'backfill') {
+      return this.tickBackfill();
+    }
+
+    return null;
+  }
+
+  private async tickForward(): Promise<{
     status: 'processed' | 'failed' | 'empty';
     newCursor?: string;
   }> {
     try {
       const sigs = await this.fetchSigs({
-        until: this.cursorForward ?? undefined,
+        until: this.cursor ?? undefined,
         limit: this.config.forwardBatchSize,
       });
 
@@ -81,7 +104,7 @@ export class SourceService {
         await this.ingestionRepository.ingresPage(txs, this.config.programId, {
           forward: lastSig,
         });
-        this.cursorForward = lastSig;
+        this.cursor = lastSig;
         return {
           status: 'processed',
           newCursor: lastSig,
@@ -102,13 +125,13 @@ export class SourceService {
     };
   }
 
-  public async tickBackfill(): Promise<{
+  private async tickBackfill(): Promise<{
     status: 'processed' | 'exhausted' | 'failed' | 'empty';
     newCursor?: string;
   }> {
     try {
       const sigs = await this.fetchSigs({
-        before: this.cursorBackfill ?? undefined,
+        before: this.cursor ?? undefined,
         limit: this.config.backfillBatchSize,
       });
 
@@ -128,7 +151,7 @@ export class SourceService {
           backfill: lastSig,
         });
         this.emptyPagesInARow = 0;
-        this.cursorBackfill = lastSig;
+        this.cursor = lastSig;
         return {
           status: 'processed',
           newCursor: lastSig,

@@ -8,12 +8,15 @@ async function bootstrap() {
     logger: ['log', 'error', 'warn', 'debug', 'verbose'],
   });
 
-  const runner = app.get(Runner);
-  runner.start();
+  const runnerBackfill = await app.resolve(Runner);
+  const runnerForward = await app.resolve(Runner);
+
+  await Promise.all([
+    runnerBackfill.start('backfill'),
+    runnerForward.start('default'),
+  ]);
 
   Logger.log('🚀 Indexer started');
-
-  await new Promise(() => void 0);
 }
 
 bootstrap().catch((e) => {

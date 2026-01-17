@@ -1,70 +1,69 @@
-import { Inject, Logger, OnModuleDestroy } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  Logger,
+  OnModuleDestroy,
+  Scope,
+} from '@nestjs/common';
 import { SourceService } from './source.service';
-import { PipelineStateRepository } from '@dln-dashboard/data-access';
 import { DST_SOURCE, SRC_SOURCE } from './tokens';
+import { IndexerMode } from '@dln-dashboard/data-access';
 
+@Injectable({ scope: Scope.TRANSIENT })
 export class Runner implements OnModuleDestroy {
   private isRunning = false;
+  private mode: IndexerMode | null = null;
   private logger = new Logger(Runner.name);
 
   constructor(
     @Inject(SRC_SOURCE) private readonly srcSource: SourceService,
     @Inject(DST_SOURCE) private readonly dstSource: SourceService,
-    private pipelineRepository: PipelineStateRepository,
   ) {}
 
-  async start() {
-    await Promise.all([this.srcSource.init(), this.dstSource.init()]);
+  async start(mode: IndexerMode) {
+    await Promise.all([this.srcSource.init(mode), this.dstSource.init(mode)]);
     this.isRunning = true;
+    this.mode = mode;
     this.run().catch((err) => {
       this.logger.error({ err }, 'Error start runner');
     });
   }
 
   onModuleDestroy() {
-    this.isRunning = false;
+    this.isRunning = true;
   }
 
   private async run() {
     const sources = new Set([this.srcSource, this.dstSource]);
 
     while (this.isRunning) {
-      const isBackfillDone = await this.pipelineRepository.geBackfillDone();
-
       let progressed = false;
 
       for (const source of sources) {
         try {
-          if (!isBackfillDone) {
-            const progress = await source.tickBackfill();
+          const progress = await source.tick();
 
-            if (progress.status === 'processed') {
-              this.logger.log(
-                { newCursor: progress.newCursor },
-                'Successful processed indexing page',
-              );
-              progressed = true;
-              await new Promise((res) => setTimeout(res, 500));
-            } else if (progress.status === 'exhausted') {
-              this.logger.log(
-                { lastProcessedCursor: progress.newCursor },
-                'Exhausted indexing page',
-              );
-            }
-          } else {
-            const progress = await source.tickForward();
+          if (!progress) continue;
 
-            if (progress.status === 'processed') {
-              this.logger.log(
-                { newCursor: progress.newCursor },
-                'Successful processed indexing page',
-              );
-              progressed = true;
-              await new Promise((res) => setTimeout(res, 500));
-            }
+          if (progress.status === 'processed') {
+            this.logger.log(
+              { newCursor: progress.newCursor, mode: this.mode },
+              'Successful processed indexing page',
+            );
+            progressed = true;
+            await new Promise((res) => setTimeout(res, 500));
+          } else if (progress.status === 'exhausted') {
+            this.logger.log(
+              { lastProcessedCursor: progress.newCursor },
+              'Exhausted indexing page',
+            );
+            if (await source.stop()) sources.delete(source);
           }
         } catch (err) {
-          this.logger.error({ err }, 'Indexer runner indexing page error');
+          this.logger.error(
+            { err, mode: this.mode },
+            'Indexer runner indexing page error',
+          );
         }
       }
 

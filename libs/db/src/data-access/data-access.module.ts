@@ -4,8 +4,10 @@ import { type DB } from '../generated/db';
 import { DB_TOKEN } from '../db.token';
 import { IndexerStateRepository } from './indexer-state.repo';
 import { RawTxRepository } from './raw-tx.repo';
-import { PipelineStateRepository } from './pipeline-state.repo';
 import { IndexerIngestionRepository } from './indexer-ingestion.repo';
+import { OrderEventRepository } from './order-event.repo';
+import { DayStatsRepository } from './day-stats.repo';
+import { AggregationJobsRepository } from './aggregation-jobs.repo';
 
 @Global()
 @Module({})
@@ -18,14 +20,18 @@ export class DataAccessModule {
         { provide: DB_TOKEN, useValue: db },
         IndexerStateRepository,
         RawTxRepository,
-        PipelineStateRepository,
         IndexerIngestionRepository,
+        AggregationJobsRepository,
+        OrderEventRepository,
+        DayStatsRepository,
       ],
       exports: [
         IndexerStateRepository,
         RawTxRepository,
-        PipelineStateRepository,
         IndexerIngestionRepository,
+        AggregationJobsRepository,
+        OrderEventRepository,
+        DayStatsRepository,
       ],
     };
   }

@@ -11,7 +11,7 @@
           "args": [
             "--node-env=production"
           ],
-          "cwd": "aggregator"
+          "cwd": "apps/aggregator"
         },
         "configurations": {
           "development": {

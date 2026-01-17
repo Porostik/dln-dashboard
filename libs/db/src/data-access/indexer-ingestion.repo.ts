@@ -33,14 +33,15 @@ export class IndexerIngestionRepository {
       }
 
       const patch: Partial<DB['indexer_state']> = {};
-      if (cursor.backfill) patch.backfill_cursor = cursor.backfill;
-      if (cursor.forward) patch.forward_cursor = cursor.forward;
+      if (cursor.backfill) patch.cursor = cursor.backfill;
+      if (cursor.forward) patch.cursor = cursor.forward;
 
       if (Object.keys(patch).length > 0) {
         await trx
           .updateTable('indexer_state')
           .set(patch)
           .where('program_id', '=', programId)
+          .where('mode', '=', cursor.backfill ? 'backfill' : 'default')
           .execute();
       }
     });

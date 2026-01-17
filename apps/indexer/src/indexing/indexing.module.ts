@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Scope } from '@nestjs/common';
 import {
   DataAccessModule,
   IndexerIngestionRepository,
@@ -18,6 +18,7 @@ import { RpcModule } from '../rpc/rpc.module';
     Runner,
     {
       provide: SRC_SOURCE,
+      scope: Scope.TRANSIENT,
       inject: [
         RpcService,
         IndexerStateRepository,
@@ -43,6 +44,7 @@ import { RpcModule } from '../rpc/rpc.module';
     },
     {
       provide: DST_SOURCE,
+      scope: Scope.TRANSIENT,
       inject: [
         RpcService,
         IndexerStateRepository,
