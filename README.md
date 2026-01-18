@@ -184,7 +184,7 @@ This metric was achieved on a local environment using a Helius RPC endpoint (~10
 
 ---
 
-## 💱 Price Handling
+## Price Handling
 
 - Price is resolved **by current day**, not by the event timestamp
 - Price values are **cached** and reused across all events for the same day
