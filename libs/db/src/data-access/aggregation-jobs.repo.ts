@@ -11,6 +11,7 @@ export class AggregationJobsRepository {
     limit: number;
     workerId: string;
     lockMs: number;
+    maxAttempts: number;
   }): Promise<string[]> {
     const now = new Date();
     const lockedUntil = new Date(now.getTime() + params.lockMs);
@@ -22,6 +23,7 @@ export class AggregationJobsRepository {
           where
             (
               status = 'pending'
+              or (status = 'failed' and next_retry_at is not null and next_retry_at <= now() and attempts < ${params.maxAttempts})
               or (status = 'processing' and locked_until is not null and locked_until < ${now})
             )
             and (next_retry_at is null or next_retry_at <= ${now})

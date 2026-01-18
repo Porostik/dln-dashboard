@@ -11,7 +11,7 @@ import {
 } from '@dln-dashboard/data-access';
 import { JsonValue, IndexerMode } from '@dln-dashboard/data-access';
 import pLimit from 'p-limit';
-import { AppConfigService } from '../config/config.service';
+import { IndexerConfigService } from '../config/config.service';
 
 type SourceConfig = {
   backfillBatchSize: number;
@@ -33,7 +33,7 @@ export class SourceService {
     private config: SourceConfig,
     private stateRepository: IndexerStateRepository,
     private ingestionRepository: IndexerIngestionRepository,
-    private indexerConfig: AppConfigService,
+    private indexerConfig: IndexerConfigService,
   ) {
     this.program = new PublicKey(config.programId);
   }
@@ -149,7 +149,7 @@ export class SourceService {
 
       const txs = await this.fetchTxs(sigs);
 
-      if (!txs.length && this.emptyPagesInARow < 20) {
+      if (!txs.length && this.emptyPagesInARow < 5) {
         this.emptyPagesInARow += 1;
         return { status: 'empty', programId: this.config.programId };
       }
@@ -205,7 +205,7 @@ export class SourceService {
       slot: number;
     }[] = [];
 
-    const limiter = pLimit(this.indexerConfig.rpc_tx_concurrency);
+    const limiter = pLimit(this.indexerConfig.rpcTxConcurrency);
 
     await Promise.all(
       sigs.map((sig, idx) =>

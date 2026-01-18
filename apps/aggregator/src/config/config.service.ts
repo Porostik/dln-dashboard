@@ -15,7 +15,6 @@ export class AggregatorConfigService {
   public jupiterUrl: string;
   public jupiterApiKey: string;
   public redisUrl: string;
-  public rpcUrl: string;
 
   constructor(configService: ConfigService) {
     this.workersCount = Number(
@@ -48,6 +47,5 @@ export class AggregatorConfigService {
     this.jupiterUrl = configService.getOrThrow<string>('JUPITER_URL');
     this.jupiterApiKey = configService.getOrThrow<string>('JUPITER_API_KEY');
     this.redisUrl = configService.getOrThrow<string>('REDIS_URL');
-    this.rpcUrl = configService.getOrThrow<string>('SOLANA_RPC_URL');
   }
 }

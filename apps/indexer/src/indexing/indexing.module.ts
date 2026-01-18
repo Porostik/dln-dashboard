@@ -7,13 +7,13 @@ import {
 import { Runner } from './runner.service';
 import { DST_SOURCE, SRC_SOURCE } from './tokens';
 import { RpcService } from '../rpc/rpc.service';
-import { AppConfigService } from '../config/config.service';
+import { IndexerConfigService } from '../config/config.service';
 import { SourceService } from './source.service';
-import { AppConfigModule } from '../config/config.module';
+import { IndexerConfigModule } from '../config/config.module';
 import { RpcModule } from '../rpc/rpc.module';
 
 @Module({
-  imports: [RpcModule, DataAccessModule, AppConfigModule],
+  imports: [RpcModule, DataAccessModule, IndexerConfigModule],
   providers: [
     Runner,
     {
@@ -23,20 +23,20 @@ import { RpcModule } from '../rpc/rpc.module';
         RpcService,
         IndexerStateRepository,
         IndexerIngestionRepository,
-        AppConfigService,
+        IndexerConfigService,
       ],
       useFactory: (
         rpc: RpcService,
         stateRepo: IndexerStateRepository,
         indexerIngestionRepo: IndexerIngestionRepository,
-        config: AppConfigService,
+        config: IndexerConfigService,
       ) =>
         new SourceService(
           rpc,
           {
             programId: config.srcProgramId,
-            backfillBatchSize: config.rpc_backfill_batch_size,
-            forwardBatchSize: config.rpc_forward_batch_size,
+            backfillBatchSize: config.rpcBackfillBatchSize,
+            forwardBatchSize: config.rpcForwardBatchSize,
           },
           stateRepo,
           indexerIngestionRepo,
@@ -50,20 +50,20 @@ import { RpcModule } from '../rpc/rpc.module';
         RpcService,
         IndexerStateRepository,
         IndexerIngestionRepository,
-        AppConfigService,
+        IndexerConfigService,
       ],
       useFactory: (
         rpc: RpcService,
         stateRepo: IndexerStateRepository,
         indexerIngestionRepo: IndexerIngestionRepository,
-        config: AppConfigService,
+        config: IndexerConfigService,
       ) =>
         new SourceService(
           rpc,
           {
             programId: config.dstProgramId,
-            backfillBatchSize: config.rpc_backfill_batch_size,
-            forwardBatchSize: config.rpc_forward_batch_size,
+            backfillBatchSize: config.rpcBackfillBatchSize,
+            forwardBatchSize: config.rpcForwardBatchSize,
           },
           stateRepo,
           indexerIngestionRepo,

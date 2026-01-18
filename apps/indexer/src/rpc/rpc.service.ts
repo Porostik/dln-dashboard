@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Connection } from '@solana/web3.js';
-import { AppConfigService } from '../config/config.service';
+import { IndexerConfigService } from '../config/config.service';
 import { RpcPolicyService } from './rpc-policy.service';
 
 @Injectable()
@@ -8,10 +8,10 @@ export class RpcService {
   connection: Connection;
 
   constructor(
-    config: AppConfigService,
+    config: IndexerConfigService,
     private policyService: RpcPolicyService,
   ) {
-    this.connection = new Connection(config.rpc_url, {
+    this.connection = new Connection(config.rpcUrl, {
       disableRetryOnRateLimit: true,
     });
   }

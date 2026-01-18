@@ -61,6 +61,7 @@ export class WorkerService {
       limit: this.config.workerJobsBatchSize,
       lockMs: this.config.workerJobsBatchLockMS,
       workerId: this.id,
+      maxAttempts: 6,
     });
 
     if (!sigs.length) return false;

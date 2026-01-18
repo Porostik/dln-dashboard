@@ -65,6 +65,15 @@ export class Runner implements OnModuleDestroy {
               'Exhausted indexing page',
             );
             if (await source.stop()) sources.delete(source);
+          } else if (progress.status === 'empty') {
+            this.logger.log(
+              {
+                lastProcessedCursor: progress.newCursor,
+                programId: progress.programId,
+                mode: this.mode,
+              },
+              'Empty indexing page',
+            );
           }
         } catch (err) {
           this.logger.error(
@@ -74,7 +83,7 @@ export class Runner implements OnModuleDestroy {
         }
       }
 
-      if (!progressed) await new Promise((res) => setTimeout(res, 5000));
+      if (!progressed) await new Promise((res) => setTimeout(res, 3000));
     }
   }
 }

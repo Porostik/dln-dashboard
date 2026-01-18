@@ -80,7 +80,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
       args:
-        APP_NAME: api
+        APP_NAME: dashboard-api
     env_file:
       - .env
     depends_on:

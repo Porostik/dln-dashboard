@@ -7,9 +7,6 @@
       "path": "./apps/aggregator"
     },
     {
-      "path": "./apps/api"
-    },
-    {
       "path": "./libs/db"
     },
     {
@@ -17,9 +14,6 @@
     },
     {
       "path": "./apps/indexer"
-    },
-    {
-      "path": "./apps/dashboard-api-e2e"
     },
     {
       "path": "./apps/dashboard-api"
