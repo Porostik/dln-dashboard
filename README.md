@@ -1,8 +1,6 @@
 # DLN Indexer & Aggregator
 
-> Production-oriented indexing and aggregation service for **deBridge DLN** on Solana.
->
-> Indexes on-chain transactions, extracts `create` / `fulfill` order events, aggregates daily statistics, and exposes a REST API for analytics.
+Indexes on-chain transactions, extracts `create` / `fulfill` order events, aggregates daily statistics, and exposes a REST API for analytics.
 
 ---
 
@@ -18,6 +16,18 @@ It includes:
 - Job-based aggregation with retries
 - Pre-aggregated analytics for fast API queries
 - Clean separation of concerns
+
+---
+
+## Technology Stack
+
+- **Node.js** — main runtime for indexer, aggregator and API
+- **PostgreSQL** — persistent storage for indexed transactions, jobs and aggregated stats
+- **Redis** — job queue coordination, locking and retry scheduling
+- **Docker / Docker Compose** — local and reproducible environment
+- **Solana RPC (Helius)** — transaction and log ingestion
+- **Jupiter API** — token price resolution
+- **Nx** — monorepo tooling and app isolation
 
 ---
 
@@ -168,6 +178,15 @@ Decouples indexing from parsing, enables retries, scaling and clean failure hand
 Fast dashboard queries without scanning raw events.
 
 </details>
+
+## Instruction & Event Parsing
+
+- Instructions and events are parsed **directly from raw transaction data**
+- Decoding is done using **borsh layouts**, matching on-chain program structures
+- Anchor discriminators are used to identify events and instruction variants
+- Parsing logic is isolated into a dedicated service/module
+
+Implementation details can be found in: [Parser service](apps/aggregator/src/parser/parser.service.ts)
 
 ---
 
