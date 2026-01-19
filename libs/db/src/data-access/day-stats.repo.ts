@@ -50,10 +50,11 @@ export class DayStatsRepository {
         'created_volume_usd',
         'fulfilled_count',
         'fulfilled_volume_usd',
-      ]);
+      ])
+      .orderBy('day', 'asc');
 
     if (from) q = q.where('day', '>=', from);
-    if (to) q = q.where('day', '<', to);
+    if (to) q = q.where('day', '<=', to);
 
     return q.execute();
   }

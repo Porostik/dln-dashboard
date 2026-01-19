@@ -153,6 +153,49 @@ Job queue.
 
 ---
 
+# Environment variables (short reference)
+
+```bash
+POSTGRES_USER – PostgreSQL user name
+POSTGRES_PASSWORD – PostgreSQL user password
+POSTGRES_DB – PostgreSQL database name
+POSTGRES_PORT – PostgreSQL exposed port
+
+DATABASE_URL – Full PostgreSQL connection string used by backend services
+
+SOLANA_RPC_URL – Solana RPC endpoint (Helius Mainnet RPC)
+
+# Indexer
+
+RPC_SIG_CONCURRENCY – Concurrent requests for fetching transaction signatures
+RPC_TX_CONCURRENCY – Concurrent requests for fetching full transactions
+RPC_BATCH_TX_CONCURRENCY – Concurrency for batch transaction RPC calls
+RPC_MAX_ATTEMPTS – Maximum retry attempts for RPC requests
+RPC_BASE_DELAY_MS – Initial retry delay for failed RPC calls (ms)
+RPC_MAX_DELAY_MS – Maximum retry backoff delay (ms)
+SRC_PROGRAM_ID – Source-chain DLN program ID
+DST_PROGRAM_ID – Destination-chain DLN program ID
+RPC_BACKFILL_BATCH_SIZE – Batch size for historical (backfill) indexing
+RPC_FORWARD_BATCH_SIZE – Batch size for live (forward) indexing
+
+# Aggregator
+
+AGGREGATION_WORKERS_COUNT – Number of parallel aggregation workers
+AGGREGATION_WORKER_TICK_INTERVAL_MS – Worker polling interval (ms)
+AGGREGATION_WORKER_JOBS_BATCH_SIZE – Jobs fetched per worker tick
+AGGREGATION_WORKER_JOBS_BATCH_LOCK_MS – Job batch lock duration (ms)
+AGGREGATION_WORKER_JOBS_CONCURRENCY – Concurrent jobs per worker
+AGGREGATION_WORKER_JOBS_BASE_ERROR_DELAY_MS – Base retry delay for failed jobs (ms)
+AGGREGATION_WORKER_JOBS_MAX_ERROR_DELAY_MS – Maximum retry delay for failed jobs (ms)
+
+JUPITER_URL – Jupiter price API endpoint
+JUPITER_API_KEY – Jupiter API key for price requests
+
+REDIS_URL – Redis connection string
+```
+
+---
+
 ## Running locally
 
 ```bash
@@ -205,6 +248,7 @@ This metric was achieved on a local environment using a Helius RPC endpoint (~10
 
 ## Price Handling
 
+- In is used Jupiter (https://api.jup.ag/price) from price fetching.
 - Price is resolved **by current day**, not by the event timestamp
 - Price values are **cached** and reused across all events for the same day
 - This approach is used intentionally to avoid **paid historical pricing APIs**

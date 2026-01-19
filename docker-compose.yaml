@@ -86,11 +86,34 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    ports:
+      - '3000:3000'
     command: ['node', 'dist/main.js']
     restart: unless-stopped
+
+  client:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+      - client-node-modules:/app/node_modules
+    environment:
+      VITE_API_URL: http://localhost:3000
+      HOST: 0.0.0.0
+      PORT: 5173
+    depends_on:
+      - api
     ports:
-      - '${API_PORT:-3000}:3000'
+      - '5173:5173'
+    command:
+      [
+        'sh',
+        '-lc',
+        'npm ci && npx nx serve dashboard-client --host=0.0.0.0 --port=5173',
+      ]
+    restart: unless-stopped
 
 volumes:
   pg-data:
   redis-data:
+  client-node-modules:

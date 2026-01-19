@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/styles/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "aliases": {
+    "components": "@dln-dashboard-client/shared/ui",
+    "utils": "@dln-dashboard-client/shared/lib/utils",
+    "ui": "@dln-dashboard-client/shared/ui",
+    "lib": "@dln-dashboard-client/shared/lib",
+    "hooks": "@dln-dashboard-client/shared/hooks"
+  },
+  "iconLibrary": "lucide"
+}

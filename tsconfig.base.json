@@ -20,7 +20,8 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "paths": {
-      "@dln-dashboard/data-access": ["./libs/db/src/index.ts"]
+      "@dln-dashboard/data-access": ["./libs/db/src/index.ts"],
+      "@dln-dashboard-client/*": ["./apps/dashboard-client/src/*"]
     }
   }
 }
