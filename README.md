@@ -237,7 +237,8 @@ Implementation details can be found in: [Parser service](apps/aggregator/src/par
 
 Indexer & Aggregator Throughput
 
-- **~50,000 on-chain events processed in ~10 minutes**
+- **~50,000 on-chain events processed in ~10 minutes** (I think the spike was caused by shared RPC caching.
+  Since Helius is used for multiple test tasks, it’s likely that we received burst responses from a hot cache — without this effect, the same amount of data would have taken roughly an hour to process.)
 - Stable ingestion without backlog accumulation
 - Pending jobs queue remains near-zero under sustained load
 - Failed jobs are retried with exponential backoff and do not block pipeline progress
